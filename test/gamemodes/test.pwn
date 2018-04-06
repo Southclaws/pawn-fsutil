@@ -67,25 +67,25 @@ Test:OpenDir() {
         bool:b;
 
     b = DirNext(dir, type, entry);
-    printf("DirNext: %d, %d, %s", b, type, entry);
+    printf("DirNext: %d, %d, %s", b, _:type, entry);
     ASSERT(b == true);
     ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\a"));
     ASSERT(type == E_REGULAR);
 
     b = DirNext(dir, type, entry);
-    printf("DirNext: %d, %d, %s", b, type, entry);
+    printf("DirNext: %d, %d, %s", b, _:type, entry);
     ASSERT(b == true);
     ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\b"));
     ASSERT(type == E_REGULAR);
 
     b = DirNext(dir, type, entry);
-    printf("DirNext: %d, %d, %s", b, type, entry);
+    printf("DirNext: %d, %d, %s", b, _:type, entry);
     ASSERT(b == true);
     ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\c"));
     ASSERT(type == E_REGULAR);
 
     b = DirNext(dir, type, entry);
-    printf("DirNext: %d, %d, %s", b, type, entry);
+    printf("DirNext: %d, %d, %s", b, _:type, entry);
     ASSERT(b == true);
     ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\d"));
     ASSERT(type == E_DIRECTORY);
@@ -96,4 +96,24 @@ Test:OpenDir() {
     ret = RemoveDir(testDir, true);
     ASSERT(ret > 0);
     ASSERT(!Exists(testDir));
+}
+
+Test:MoveFile() {
+    new
+        from[] = "scriptfiles/MoveFileA",
+        to[] = "scriptfiles/MoveFileB";
+
+    if(!Exists(from)) {
+        fclose(fopen("MoveFileA", io_write));
+    }
+    if(Exists(from)) {
+        fremove("MoveFileB");
+    }
+
+    new ret = MoveFile(from, to);
+    ASSERT(ret == 0);
+    ASSERT(Exists(to));
+    ASSERT(!Exists(from));
+
+    fremove("MoveFileB");
 }

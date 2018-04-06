@@ -19,3 +19,4 @@ native RemoveDir(path[], bool:recursive = false);
 native Directory:OpenDir(path[]);
 native bool:DirNext(Directory:dir, &ENTRY_TYPE:type, entry[], len = sizeof(entry));
 native CloseDir(Directory:dir);
+native MoveFile(from[], to[]);

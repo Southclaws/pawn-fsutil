@@ -67,28 +67,28 @@ Test:OpenDir() {
         bool:b;
     
     b = DirNext(dir, type, entry);
-    // printf("DirNext: %d, %d, %s", b, type, entry);
-    // ASSERT(b == true);
-    // ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\a"));
-    // ASSERT(type == E_REGULAR);
+    printf("DirNext: %d, %d, %s", b, type, entry);
+    ASSERT(b == true);
+    ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\a"));
+    ASSERT(type == E_REGULAR);
 
     b = DirNext(dir, type, entry);
-    // printf("DirNext: %d, %d, %s", b, type, entry);
-    // ASSERT(b == true);
-    // ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\b"));
-    // ASSERT(type == E_REGULAR);
+    printf("DirNext: %d, %d, %s", b, type, entry);
+    ASSERT(b == true);
+    ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\b"));
+    ASSERT(type == E_REGULAR);
 
     b = DirNext(dir, type, entry);
-    // printf("DirNext: %d, %d, %s", b, type, entry);
-    // ASSERT(b == true);
-    // ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\c"));
-    // ASSERT(type == E_REGULAR);
+    printf("DirNext: %d, %d, %s", b, type, entry);
+    ASSERT(b == true);
+    ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\c"));
+    ASSERT(type == E_REGULAR);
 
     b = DirNext(dir, type, entry);
-    // printf("DirNext: %d, %d, %s", b, type, entry);
-    // ASSERT(b == true);
-    // ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\d"));
-    // ASSERT(type == E_DIRECTORY);
+    printf("DirNext: %d, %d, %s", b, type, entry);
+    ASSERT(b == true);
+    ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\d"));
+    ASSERT(type == E_DIRECTORY);
 
     ret = CloseDir(dir);
     ASSERT(ret == 0);

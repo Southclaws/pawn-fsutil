@@ -54,7 +54,16 @@ bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
         return false;
     }
 
-    // todo: store entry, increment iterator
+	auto iter = val->second;
+	if (iter == fs::end(iter)) {
+		return false;
+	}
+
+	entry = iter->path().string();
+	type = iter->status().type();
+
+	iter++;
+	openDirPool[id] = iter;
 
     return true;
 }

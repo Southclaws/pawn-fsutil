@@ -1,14 +1,10 @@
-# samp-fsutil
+# fsutil
 
-Derived from FileManager by JaTochNietDan, fsutil is a file system utility plugin.
-
-This project contains unit tests and is designed to work with Docker container file systems.
+fsutil is a file system utility plugin for Pawn.
 
 ## Installation
 
-Note: Still in development.
-
-<!-- Simply install to your project:
+Simply install to your project:
 
 ```bash
 sampctl package install Southclaws/samp-fsutil
@@ -18,26 +14,33 @@ Include in your code and begin using the library:
 
 ```pawn
 #include <fsutil>
-``` -->
+```
+
+## Usage
+
+`Exists`, `CreateDir`, `RemoveDir` are self explanitory. `Exists` works on files
+and directories.
+
+`OpenDir` opens a directory ready for iterating, each `DirNext` call will
+iterate through the directory, use it like
+`while(DirNext(dir, type, entry) { ...` where `type` and `entry` are pass by
+reference. When you're done, use `CloseDir` to close the directory and free
+memory.
+
+`MoveFile` and `CopyFile` do exactly what you expect.
 
 ## Testing
 
-You can compile the plugin and test it in a Docker container all with one command:
+Run unit tests with:
 
-```bash
-make build-e2e
+### Windows
+
+```powershell
+make test-windows
 ```
 
-This will:
-
-* build the plugin inside a Debian docker image
-* build the Pawn package in `test/` with [sampctl](http://sampctl.com)
-* run the server in `test/` as a container, also with sampctl
-
-Or you can just do the build process with:
+### Linux
 
 ```bash
-make build-debian
+make test-debian
 ```
-
-(thanks to maddinat0r for the Docker images!)

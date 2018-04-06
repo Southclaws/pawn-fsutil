@@ -3,6 +3,10 @@ test-windows:
 	sampctl package build
 	cd test && sampctl server run
 
+test-linux:
+	sampctl package build
+	cd test && sampctl server run
+
 build-debian:
 	rm -rf build
 	docker build -t southclaws/fsutil-build .

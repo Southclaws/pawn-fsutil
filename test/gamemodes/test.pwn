@@ -65,7 +65,7 @@ Test:OpenDir() {
         entry[256],
         ENTRY_TYPE:type,
         bool:b;
-    
+
     b = DirNext(dir, type, entry);
     printf("DirNext: %d, %d, %s", b, type, entry);
     ASSERT(b == true);

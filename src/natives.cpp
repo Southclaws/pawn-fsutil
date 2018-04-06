@@ -47,8 +47,7 @@ cell AMX_NATIVE_CALL Native::DirNext(AMX* amx, cell* params)
 
 cell AMX_NATIVE_CALL Native::CloseDir(AMX* amx, cell* params)
 {
-    std::string path = amx_GetCppString(amx, params[1]);
-    return 0;
+    return Impl::CloseDir(params[1]);
 }
 
 cell AMX_NATIVE_CALL Native::MoveFile(AMX* amx, cell* params)

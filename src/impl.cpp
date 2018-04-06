@@ -1,6 +1,8 @@
-#include "common.hpp"
 #include "impl.hpp"
+#include "common.hpp"
 
+std::map<int, fs::directory_iterator> openDirPool;
+int openDirPoolCount = 0;
 
 bool Impl::Exists(std::string path)
 {
@@ -9,22 +11,28 @@ bool Impl::Exists(std::string path)
 
 int Impl::CreateDir(std::string path)
 {
-	int ret = 0;
-	
-	try {
-		ret = fs::create_directories(path);
-	} catch (std::exception e) {
-		logprintf("create_directories failed: %s", e.what());
-		ret = -1;
-	}
-    
-	return ret;
+    int ret = 0;
+
+    try {
+        ret = fs::create_directories(path);
+    } catch (std::exception e) {
+        logprintf("create_directories failed: %s", e.what());
+        ret = -1;
+    }
+
+    return ret;
 }
 
 int Impl::RemoveDir(std::string path, bool recursive)
 {
+    int ret;
     std::error_code ec;
-    int ret = (int)fs::remove_all(path, ec);
+
+    if (recursive) {
+        ret = (int)fs::remove_all(path, ec);
+    } else {
+        ret = (int)fs::remove(path, ec);
+    }
     if (ec) {
         // negative values indicate error
         return -ec.value();
@@ -32,12 +40,28 @@ int Impl::RemoveDir(std::string path, bool recursive)
     return ret;
 }
 
-int Impl::ListDir(std::string path, std::vector<std::string>* result)
+int Impl::OpenDir(std::string path)
 {
-    for (auto entry : fs::directory_iterator(path)) {
-        result->push_back(entry.path().string());
+    fs::directory_iterator iter = fs::directory_iterator(path);
+    openDirPool[openDirPoolCount] = iter;
+    return openDirPoolCount++;
+}
+
+bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
+{
+    auto val = openDirPool.find(id);
+    if (val == openDirPool.end()) {
+        return false;
     }
 
+    // todo: store entry, increment iterator
+
+    return true;
+}
+
+int Impl::CloseDir(int id)
+{
+    openDirPool.erase(id);
     return 0;
 }
 

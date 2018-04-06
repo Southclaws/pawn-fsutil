@@ -8,7 +8,9 @@ cell Exists(AMX* amx, cell* params);
 
 cell CreateDir(AMX* amx, cell* params);
 cell RemoveDir(AMX* amx, cell* params);
-cell ListDir(AMX* amx, cell* params);
+cell OpenDir(AMX* amx, cell* params);
+cell DirNext(AMX* amx, cell* params);
+cell CloseDir(AMX* amx, cell* params);
 
 cell MoveFile(AMX* amx, cell* params);
 cell CopyFile(AMX* amx, cell* params);

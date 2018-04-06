@@ -6,7 +6,6 @@
 
 logprintf_t logprintf;
 
-
 PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports()
 {
     return SUPPORTS_VERSION | SUPPORTS_AMX_NATIVES;
@@ -29,7 +28,9 @@ AMX_NATIVE_INFO NATIVES[] = {
 
     { "CreateDir", Native::CreateDir },
     { "RemoveDir", Native::RemoveDir },
-    { "ListDir", Native::ListDir },
+    { "OpenDir", Native::OpenDir },
+    { "DirNext", Native::DirNext },
+    { "CloseDir", Native::CloseDir },
 
     { "MoveFile", Native::MoveFile },
     { "CopyFile", Native::CopyFile },

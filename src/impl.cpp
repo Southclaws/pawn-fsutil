@@ -88,11 +88,7 @@ int Impl::MoveFile(std::string from, std::string to)
 
 int Impl::CopyFile(std::string from, std::string to)
 {
-    try {
-        fs::copy(from, to);
-    } catch (std::exception e) {
-        return 1;
-    }
-
-    return 0;
+	std::error_code ec;
+	fs::copy(from, to, ec);
+	return ec.value();
 }

@@ -59,5 +59,7 @@ cell AMX_NATIVE_CALL Native::MoveFile(AMX* amx, cell* params)
 
 cell AMX_NATIVE_CALL Native::CopyFile(AMX* amx, cell* params)
 {
-    return 0;
+	std::string from = amx_GetCppString(amx, params[1]);
+	std::string to = amx_GetCppString(amx, params[2]);
+	return Impl::CopyFile(from, to);
 }

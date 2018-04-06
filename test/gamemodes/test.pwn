@@ -117,3 +117,24 @@ Test:MoveFile() {
 
     fremove("MoveFileB");
 }
+
+Test:CopyFile() {
+    new
+        from[] = "scriptfiles/CopyFileA",
+        to[] = "scriptfiles/CopyFileB";
+
+    if(!Exists(from)) {
+        fclose(fopen("CopyFileA", io_write));
+    }
+    if(Exists(from)) {
+        fremove("CopyFileB");
+    }
+
+    new ret = CopyFile(from, to);
+    ASSERT(ret == 0);
+    ASSERT(Exists(to));
+    ASSERT(Exists(from));
+
+    fremove("CopyFileA");
+    fremove("CopyFileB");
+}

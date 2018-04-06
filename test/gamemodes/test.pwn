@@ -6,12 +6,6 @@
 #include "../../fsutil.inc"
 
 main() {
-    test("scriptfiles/somefile");
-    test("server.cfg");
-}
-
-test(name[]) {
-    printf("%s: %d", name, Exists(name)); // stat(2)
 }
 
 Test:Exists() {
@@ -22,7 +16,28 @@ Test:Exists() {
 }
 
 Test:CreateDir() {
-    new ret = CreateDir("scriptfiles/somedir");
-    ASSERT(ret >= 0);
-    ASSERT(Exists("scriptfiles/somedir"));
+    new testDir[] = "scriptfiles/CreateDir";
+
+    if(Exists(testDir)) {
+        ASSERT(RemoveDir(testDir) == 0);
+    }
+
+    new ret = CreateDir(testDir);
+    ASSERT(ret == 1);
+    ASSERT(Exists(testDir));
+
+    // cleanup
+    ASSERT(RemoveDir(testDir) == 0);
+}
+
+Test:RemoveDir() {
+    new testDir[] = "scriptfiles/RemoveDir";
+
+    if(!Exists(testDir)) {
+        ASSERT(CreateDir(testDir) == 1);
+    }
+
+    new ret = RemoveDir(testDir);
+    ASSERT(ret == 0);
+    ASSERT(!Exists(testDir));
 }

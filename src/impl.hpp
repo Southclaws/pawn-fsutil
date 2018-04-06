@@ -14,7 +14,7 @@ bool Exists(std::string path);
 
 int CreateDir(std::string path);
 int RemoveDir(std::string path, bool recursive);
-int ListDir(std::string path, std::vector<std::string>& result);
+int ListDir(std::string path, std::vector<std::string>* result);
 
 int MoveFile(std::string from, std::string to);
 int CopyFile(std::string from, std::string to);

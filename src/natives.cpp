@@ -13,7 +13,8 @@ cell AMX_NATIVE_CALL Native::Exists(AMX* amx, cell* params)
 
 cell AMX_NATIVE_CALL Native::CreateDir(AMX* amx, cell* params)
 {
-    return 0;
+	std::string path = amx_GetCppString(amx, params[1]);
+	return Impl::CreateDir(path);
 }
 
 cell AMX_NATIVE_CALL Native::RemoveDir(AMX* amx, cell* params)

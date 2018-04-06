@@ -1,13 +1,11 @@
 #include <amx/amx.h>
 #include <plugincommon.h>
 
+#include "common.hpp"
 #include "natives.hpp"
-
-typedef void (*logprintf_t)(char* format, ...);
 
 logprintf_t logprintf;
 
-extern void* pAMXFunctions;
 
 PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports()
 {

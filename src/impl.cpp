@@ -1,4 +1,6 @@
+#include "common.hpp"
 #include "impl.hpp"
+
 
 bool Impl::Exists(std::string path)
 {
@@ -7,17 +9,22 @@ bool Impl::Exists(std::string path)
 
 int Impl::CreateDir(std::string path)
 {
-    if (fs::create_directories(path)) {
-        return 0;
-    } else {
-        return 1;
-    }
+	int ret = 0;
+	
+	try {
+		ret = fs::create_directories(path);
+	} catch (std::exception e) {
+		logprintf("create_directories failed: %s", e.what());
+		ret = -1;
+	}
+    
+	return ret;
 }
 
 int Impl::RemoveDir(std::string path, bool recursive)
 {
     std::error_code ec;
-    int ret = fs::remove_all(path, ec);
+    int ret = (int)fs::remove_all(path, ec);
     if (ec) {
         // negative values indicate error
         return -ec.value();
@@ -25,10 +32,10 @@ int Impl::RemoveDir(std::string path, bool recursive)
     return ret;
 }
 
-int Impl::ListDir(std::string path, std::vector<std::string>& result)
+int Impl::ListDir(std::string path, std::vector<std::string>* result)
 {
-    for (auto& entry : fs::directory_iterator(path)) {
-        result.push_back(entry.path);
+    for (auto entry : fs::directory_iterator(path)) {
+        result->push_back(entry.path().string());
     }
 
     return 0;

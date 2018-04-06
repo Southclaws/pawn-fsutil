@@ -12,6 +12,7 @@ add_samp_plugin(fsutil
 	${SAMPSDK_DIR}/amxplugin.cpp
 	${SAMPSDK_DIR}/amxplugin2.cpp
 	${SAMPSDK_DIR}/amx/getch.c
+	common.hpp
 	fsutil.cpp
 	impl.cpp
 	impl.hpp

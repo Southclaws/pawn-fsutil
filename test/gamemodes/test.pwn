@@ -20,3 +20,9 @@ Test:Exists() {
     ASSERT(Exists("server.cfg"));
     ASSERT(Exists("server_log.txt"));
 }
+
+Test:CreateDir() {
+    new ret = CreateDir("scriptfiles/somedir");
+    ASSERT(ret >= 0);
+    ASSERT(Exists("scriptfiles/somedir"));
+}

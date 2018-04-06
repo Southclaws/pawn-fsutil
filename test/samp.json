@@ -1,8 +1,9 @@
 {
-    "gamemodes": ["test"],
-    "plugins": ["fsutil"],
-    "rcon_password": ";,JoTh856/:?",
-    "port": 7777,
-    "hostname": "test",
-    "maxplayers": 32
+  "gamemodes": ["test"],
+  "plugins": ["fsutil"],
+  "rcon_password": ";,JoTh856/:?",
+  "port": 7777,
+  "hostname": "test",
+  "maxplayers": 32,
+  "mode": "y_testing"
 }

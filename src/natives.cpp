@@ -1,5 +1,4 @@
 #include <string>
-using std::string;
 
 #include <amx/amx2.h>
 
@@ -8,7 +7,7 @@ using std::string;
 
 cell AMX_NATIVE_CALL Native::Exists(AMX* amx, cell* params)
 {
-    string path = amx_GetCppString(amx, params[1]);
+    std::string path = amx_GetCppString(amx, params[1]);
     return Impl::Exists(path);
 }
 

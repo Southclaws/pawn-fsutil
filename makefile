@@ -1,3 +1,8 @@
+test-windows:
+	cp test/plugins/Debug/fsutil.dll test/plugins/fsutil.dll
+	sampctl package build
+	cd test && sampctl server run
+
 build-debian:
 	rm -rf build
 	docker build -t southclaws/fsutil-build .

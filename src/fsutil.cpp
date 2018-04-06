@@ -1,11 +1,7 @@
-// fsutil, based on the old FileManager plugin by JaTochNietDan
-
 #include <amx/amx.h>
 #include <plugincommon.h>
 
 #include "natives.hpp"
-
-#define VERSION "Version 1.5"
 
 typedef void (*logprintf_t)(char* format, ...);
 

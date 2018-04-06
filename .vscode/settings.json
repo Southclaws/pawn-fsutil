@@ -13,6 +13,8 @@
         "string": "cpp",
         "fstream": "cpp",
         "ios": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "filesystem": "cpp",
+        "xstring": "cpp"
     }
 }

@@ -1,73 +1,51 @@
-// implementation
-
-#if defined(_WIN32)
-// windows file functions
-#include "dirent.h"
-#include <direct.h>
-#include <io.h>
-#else
-// linux file functions
-#include <dirent.h>
-#include <unistd.h>
-#endif
-
-#include <cstring>
-#include <fstream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <sys/stat.h>
-#include <sys/types.h>
-
-#include <amx/amx.h>
-
 #include "impl.hpp"
 
-bool Impl::Exists(string path)
+bool Impl::Exists(std::string path)
 {
-#if defined(_WIN32)
-    return access(path.c_str(), 0);
-#else
-    struct stat st;
-    return stat(path.c_str(), &st);
-#endif
+    return fs::exists(path);
 }
 
-int CreateDir(string path)
+int Impl::CreateDir(std::string path)
 {
-#if defined(_WIN32)
-    return mkdir(path.c_str());
-#else
-    return mkdir(path.c_str(), 0755);
-#endif
+    if (fs::create_directories(path)) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+int Impl::RemoveDir(std::string path, bool recursive)
+{
+    std::error_code ec;
+    int ret = fs::remove_all(path, ec);
+    if (ec) {
+        // negative values indicate error
+        return -ec.value();
+    }
+    return ret;
+}
+
+int Impl::ListDir(std::string path, std::vector<std::string>& result)
+{
+    for (auto& entry : fs::directory_iterator(path)) {
+        result.push_back(entry.path);
+    }
 
     return 0;
 }
 
-int RemoveDir(string path, bool recursive)
+int Impl::MoveFile(std::string from, std::string to)
 {
-    // todo: recursive
-    return rmdir(path);
+    return rename(from.c_str(), to.c_str());
 }
 
-int MoveFile(string from, string to)
+int Impl::CopyFile(std::string from, std::string to)
 {
-    return rename(from.c_str(), to.c_str();
-}
-
-int CopyFile(string from, string to)
-{
-    if (!(fopen(from.c_str(), "r"))) {
+    try {
+        fs::copy(from, to);
+    } catch (std::exception e) {
         return 1;
     }
-
-    std::ifstream fromStream(from, std::fstream::binary);
-    std::ofstream toStream(to, std::fstream::trunc | std::fstream::binary);
-
-    toStream << fromStream.rdbuf();
-
-    fromStream.close();
-    toStream.close();
 
     return 0;
 }

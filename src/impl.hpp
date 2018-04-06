@@ -1,19 +1,23 @@
 #ifndef FSUTIL_IMPL_H
 #define FSUTIL_IMPL_H
 
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <string>
+namespace fs = std::experimental::filesystem::v1;
 
-using std::string;
+#include <amx/amx.h>
 
 namespace Impl {
-bool Exists(string path);
+bool Exists(std::string path);
 
-int CreateDir(string path);
-int RemoveDir(string path, bool recursive);
-int ListDir(string path, string result[]);
+int CreateDir(std::string path);
+int RemoveDir(std::string path, bool recursive);
+int ListDir(std::string path, std::vector<std::string>& result);
 
-int MoveFile(string from, string to);
-int CopyFile(string from, string to);
+int MoveFile(std::string from, std::string to);
+int CopyFile(std::string from, std::string to);
 };
 
 #endif

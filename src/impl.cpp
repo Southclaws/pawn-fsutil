@@ -70,13 +70,20 @@ bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
 
 int Impl::CloseDir(int id)
 {
-    openDirPool.erase(id);
+	auto val = openDirPool.find(id);
+	if (val == openDirPool.end()) {
+		return 1;
+	}
+
+	openDirPool.erase(id);
     return 0;
 }
 
 int Impl::MoveFile(std::string from, std::string to)
 {
-    return rename(from.c_str(), to.c_str());
+	std::error_code ec;
+    fs::rename(from, to, ec);
+	return ec.value();
 }
 
 int Impl::CopyFile(std::string from, std::string to)

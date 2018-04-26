@@ -15,6 +15,9 @@
         "ios": "cpp",
         "locale": "cpp",
         "filesystem": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "cstddef": "cpp",
+        "type_traits": "cpp",
+        "cctype": "cpp"
     }
 }

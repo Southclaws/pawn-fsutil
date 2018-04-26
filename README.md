@@ -2,6 +2,9 @@
 
 fsutil is a file system utility plugin for Pawn.
 
+Provides a simple API for checking existence, creating, reading and removing
+directories and moving/copying files or directories.
+
 ## Installation
 
 Simply install to your project:

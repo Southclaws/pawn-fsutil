@@ -53,16 +53,21 @@ new ret = CloseDir(dir); // always close an open Directory
 
 ## Testing
 
-Run unit tests with:
-
-### Windows
+To run unit tests for Windows, first build the plugin with Visual Studio. If you
+use "Open CMake" mode, the `.dll` file will be output directly to the `plugins`
+directory of the test runtime. If you use cmake to generate a solution file, the
+`.dll` file will probably be in a directory inside `plugins` named `Release` (or
+`Debug`) so you'll have to copy that out first with
+`cp test/plugins/Release/fsutil.dll test/plugins/fsutil.dll`.
 
 ```powershell
 make test-windows
 ```
 
-### Linux
+Linux testing can be done on Windows if you have Docker installed. The following
+command just runs the same as the `test-windows` but with `--container`
+activated to vitualise a Linux environment.
 
 ```bash
-make test-debian
+make test-linux
 ```

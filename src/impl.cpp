@@ -26,16 +26,20 @@ int Impl::CreateDir(std::string path)
 int Impl::RemoveDir(std::string path, bool recursive)
 {
     int ret;
+#if defined WIN32
     std::error_code ec;
+#else
+    boost::system::error_code ec;
+#endif
 
     if (recursive) {
-        ret = (int)fs::remove_all(path, ec);
+        ret = static_cast<int>(fs::remove_all(path, ec));
     } else {
-        ret = (int)fs::remove(path, ec);
+        ret = static_cast<int>(fs::remove(path, ec));
     }
     if (ec) {
         // negative values indicate error
-        return -ec.value();
+        ret = -ec.value();
     }
     return ret;
 }
@@ -54,41 +58,49 @@ bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
         return false;
     }
 
-	auto iter = val->second;
-	if (iter == fs::end(iter)) {
-		return false;
-	}
+    auto iter = val->second;
+    if (iter == fs::end(iter)) {
+        return false;
+    }
 
-	entry = iter->path().string();
-	type = iter->status().type();
+    entry = iter->path().string();
+    type = iter->status().type();
 
-	iter++;
-	openDirPool[id] = iter;
+    iter++;
+    openDirPool[id] = iter;
 
     return true;
 }
 
 int Impl::CloseDir(int id)
 {
-	auto val = openDirPool.find(id);
-	if (val == openDirPool.end()) {
-		return 1;
-	}
+    auto val = openDirPool.find(id);
+    if (val == openDirPool.end()) {
+        return 1;
+    }
 
-	openDirPool.erase(id);
+    openDirPool.erase(id);
     return 0;
 }
 
 int Impl::MoveFile(std::string from, std::string to)
 {
-	std::error_code ec;
+#if defined WIN32
+    std::error_code ec;
+#else
+    boost::system::error_code ec;
+#endif
     fs::rename(from, to, ec);
-	return ec.value();
+    return ec.value();
 }
 
 int Impl::CopyFile(std::string from, std::string to)
 {
-	std::error_code ec;
-	fs::copy(from, to, ec);
-	return ec.value();
+#if defined WIN32
+    std::error_code ec;
+#else
+    boost::system::error_code ec;
+#endif
+    fs::copy(from, to, ec);
+    return ec.value();
 }

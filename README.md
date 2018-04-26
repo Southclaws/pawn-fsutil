@@ -25,7 +25,26 @@ and directories.
 iterate through the directory, use it like
 `while(DirNext(dir, type, entry) { ...` where `type` and `entry` are pass by
 reference. When you're done, use `CloseDir` to close the directory and free
-memory.
+memory:
+
+```pawn
+new
+    Directory:dir = OpenDir(testDir),
+    entry[256],
+    ENTRY_TYPE:type;
+
+while(DirNext(dir, type, entry)) {
+    if(type == E_REGULAR) {
+        printf("File: %s", entry);
+    } else if(type == E_DIRECTORY) {
+        printf("Directory: %s", entry);
+    } else {
+        printf("Something else: %s", entry);
+    }
+}
+
+new ret = CloseDir(dir); // always close an open Directory
+```
 
 `MoveFile` and `CopyFile` do exactly what you expect.
 

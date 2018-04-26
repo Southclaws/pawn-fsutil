@@ -18,7 +18,7 @@ Include in your code and begin using the library:
 
 ## Usage
 
-`Exists`, `CreateDir`, `RemoveDir` are self explanitory. `Exists` works on files
+`Exists`, `CreateDir`, `RemoveDir` are self explanatory. `Exists` works on files
 and directories.
 
 `OpenDir` opens a directory ready for iterating, each `DirNext` call will

@@ -1,11 +1,10 @@
 test-windows:
-	cp test/plugins/Debug/fsutil.dll test/plugins/fsutil.dll
 	sampctl package build
 	cd test && sampctl server run
 
 test-linux:
 	sampctl package build
-	cd test && sampctl server run
+	cd test && sampctl server run --container
 
 build-debian:
 	rm -rf build

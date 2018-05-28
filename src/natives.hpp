@@ -14,6 +14,12 @@ cell CloseDir(AMX* amx, cell* params);
 
 cell MoveFile(AMX* amx, cell* params);
 cell CopyFile(AMX* amx, cell* params);
+
+cell PathSep(AMX* amx, cell* params);
+cell PathJoin(AMX* amx, cell* params);
+cell PathBase(AMX* amx, cell* params);
+cell PathDir(AMX* amx, cell* params);
+cell PathExt(AMX* amx, cell* params);
 };
 
 #endif

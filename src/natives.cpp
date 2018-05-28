@@ -59,7 +59,44 @@ cell AMX_NATIVE_CALL Native::MoveFile(AMX* amx, cell* params)
 
 cell AMX_NATIVE_CALL Native::CopyFile(AMX* amx, cell* params)
 {
-	std::string from = amx_GetCppString(amx, params[1]);
-	std::string to = amx_GetCppString(amx, params[2]);
-	return Impl::CopyFile(from, to);
+    std::string from = amx_GetCppString(amx, params[1]);
+    std::string to = amx_GetCppString(amx, params[2]);
+    return Impl::CopyFile(from, to);
+}
+
+cell Native::PathSep(AMX * amx, cell * params) {
+	return fs::path::preferred_separator;
+}
+
+cell AMX_NATIVE_CALL Native::PathJoin(AMX* amx, cell* params)
+{
+    std::string a = amx_GetCppString(amx, params[1]);
+    std::string b = amx_GetCppString(amx, params[2]);
+    std::string result = Impl::PathJoin(a, b);
+    amx_SetCppString(amx, params[3], result, params[4]);
+    return 0;
+}
+
+cell AMX_NATIVE_CALL Native::PathBase(AMX* amx, cell* params)
+{
+    std::string input = amx_GetCppString(amx, params[1]);
+    std::string base = Impl::PathBase(input);
+    amx_SetCppString(amx, params[2], base, params[3]);
+    return 0;
+}
+
+cell AMX_NATIVE_CALL Native::PathDir(AMX* amx, cell* params)
+{
+    std::string input = amx_GetCppString(amx, params[1]);
+    std::string base = Impl::PathDir(input);
+    amx_SetCppString(amx, params[2], base, params[3]);
+    return 0;
+}
+
+cell AMX_NATIVE_CALL Native::PathExt(AMX* amx, cell* params)
+{
+    std::string input = amx_GetCppString(amx, params[1]);
+    std::string base = Impl::PathExt(input);
+    amx_SetCppString(amx, params[2], base, params[3]);
+    return 0;
 }

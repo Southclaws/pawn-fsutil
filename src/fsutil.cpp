@@ -34,6 +34,13 @@ AMX_NATIVE_INFO NATIVES[] = {
 
     { "MoveFile", Native::MoveFile },
     { "CopyFile", Native::CopyFile },
+
+	{ "PathSep", Native::PathSep },
+    { "PathJoin", Native::PathJoin },
+    { "PathBase", Native::PathBase },
+    { "PathDir", Native::PathDir },
+    { "PathExt", Native::PathExt },
+
     { 0, 0 }
 };
 

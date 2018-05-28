@@ -54,41 +54,72 @@ bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
         return false;
     }
 
-	auto iter = val->second;
-	if (iter == fs::end(iter)) {
-		return false;
-	}
+    auto iter = val->second;
+    if (iter == fs::end(iter)) {
+        return false;
+    }
 
-	entry = iter->path().string();
-	type = iter->status().type();
+    entry = iter->path().string();
+    type = iter->status().type();
 
-	iter++;
-	openDirPool[id] = iter;
+    iter++;
+    openDirPool[id] = iter;
 
     return true;
 }
 
 int Impl::CloseDir(int id)
 {
-	auto val = openDirPool.find(id);
-	if (val == openDirPool.end()) {
-		return 1;
-	}
+    auto val = openDirPool.find(id);
+    if (val == openDirPool.end()) {
+        return 1;
+    }
 
-	openDirPool.erase(id);
+    openDirPool.erase(id);
     return 0;
 }
 
 int Impl::MoveFile(std::string from, std::string to)
 {
-	std::error_code ec;
+    std::error_code ec;
     fs::rename(from, to, ec);
-	return ec.value();
+    return ec.value();
 }
 
 int Impl::CopyFile(std::string from, std::string to)
 {
-	std::error_code ec;
-	fs::copy(from, to, ec);
-	return ec.value();
+    std::error_code ec;
+    fs::copy(from, to, ec);
+    return ec.value();
+}
+
+std::string Impl::PathJoin(std::string a, std::string b)
+{
+	fs::path result(a);
+	result.append(b);
+    return result.string();
+}
+
+std::string Impl::PathBase(std::string input)
+{
+	fs::path p(input);
+	return (*p.end()).string();
+}
+
+std::string Impl::PathDir(std::string input)
+{
+	fs::path p(input);
+	if (p.has_parent_path()) {
+		return p.parent_path().string();
+	}
+    return ".";
+}
+
+std::string Impl::PathExt(std::string input)
+{
+	fs::path p(input);
+	if (p.has_extension()) {
+		return p.extension().string();
+	}
+	return "";
 }

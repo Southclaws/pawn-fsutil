@@ -26,6 +26,11 @@ int CloseDir(int id);
 
 int MoveFile(std::string from, std::string to);
 int CopyFile(std::string from, std::string to);
+
+std::string PathJoin(std::string a, std::string b);
+std::string PathBase(std::string input);
+std::string PathDir(std::string input);
+std::string PathExt(std::string input);
 };
 
 #endif

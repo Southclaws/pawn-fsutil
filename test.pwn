@@ -1,11 +1,16 @@
 #define RUN_TESTS
 
+#include "fsutil.inc"
+
 #include <a_samp>
 #include <YSI\y_testing>
 
-#include "../../fsutil.inc"
+
+new Separator;
 
 main() {
+    Separator = PathSep();
+    printf("Platform specific directory separator: '%c'", Separator);
 }
 
 Test:Exists() {
@@ -137,4 +142,79 @@ Test:CopyFile() {
 
     fremove("CopyFileA");
     fremove("CopyFileB");
+}
+
+Test:PathJoin() {
+    new
+        a[] = "scriptfiles",
+        b[] = "folderA";
+
+    new wantOutput[256];
+    format(wantOutput, sizeof wantOutput, "%s%c%s", a, Separator, b);
+
+    new output[256];
+    PathJoin(a, b, output);
+
+    ASSERT(!strcmp(output, wantOutput));
+}
+
+Test:PathBaseLong() {
+    new output[256];
+    PathBase("scriptfiles/someFolder/another/file.png", output);
+
+    ASSERT(!strcmp(output, "file.png"));
+}
+
+Test:PathBaseJustFile() {
+    new output[256];
+    PathBase("file.png", output);
+
+    ASSERT(!strcmp(output, "file.png"));
+}
+
+Test:PathBaseEmpty() {
+    new output[256];
+    PathBase("", output);
+
+    ASSERT(!strcmp(output, ""));
+}
+
+Test:PathBaseDot() {
+    new output[256];
+    PathBase(".", output);
+
+    ASSERT(!strcmp(output, ""));
+}
+
+Test:PathDir() {
+    new wantOutput[256];
+    format(wantOutput, sizeof wantOutput, "scriptfiles%csomeFolder%canother", Separator, Separator);
+
+    new output[256];
+    PathDir("scriptfiles/someFolder/another/file.png", output);
+    ASSERT(!strcmp(output, wantOutput));
+}
+
+Test:PathDirNoParent() {
+    new output[256];
+    PathDir("file.png", output);
+    ASSERT(!strcmp(output, "."));
+}
+
+Test:PathExt() {
+    new output[256];
+    PathExt("file.png", output);
+    ASSERT(!strcmp(output, ".png"));
+}
+
+Test:PathExtMulti() {
+    new output[256];
+    PathExt("file.tar.gz", output);
+    ASSERT(!strcmp(output, ".gz"));
+}
+
+Test:PathExtNone() {
+    new output[256];
+    PathExt("file", output);
+    ASSERT(!strcmp(output, ""));
 }

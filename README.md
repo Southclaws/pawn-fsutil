@@ -29,6 +29,18 @@ memory.
 
 `MoveFile` and `CopyFile` do exactly what you expect.
 
+### Path Functions
+
+There are also a handful of helper functions for working with file paths:
+
+* `PathSep`
+* `PathJoin`
+* `PathBase`
+* `PathDir`
+* `PathExt`
+
+See the source code for documentation.
+
 ## Testing
 
 Run unit tests with:

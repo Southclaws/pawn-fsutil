@@ -47,3 +47,4 @@ server_log.txt
 build/
 *.so
 *.o
+.vs/

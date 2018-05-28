@@ -14,9 +14,9 @@ sampctl package install Southclaws/samp-fsutil
 
 Include in your code and begin using the library:
 
-[code][FONT="courier new"]
+[CODE]
 [COLOR="Blue"]#include <fsutil>[/COLOR]
-[/FONT][/code]
+[/CODE]
 
 [COLOR="RoyalBlue"][SIZE="6"][B]Usage[/B][/SIZE][/COLOR]
 
@@ -24,7 +24,7 @@ Include in your code and begin using the library:
 
 [FONT="courier new"]OpenDir[/FONT] opens a directory ready for iterating, each [FONT="courier new"]DirNext[/FONT] call will iterate through the directory, use it like [FONT="courier new"]while(DirNext(dir, type, entry) { ...[/FONT] where [FONT="courier new"]type[/FONT] and [FONT="courier new"]entry[/FONT] are pass by reference. When you’re done, use [FONT="courier new"]CloseDir[/FONT] to close the directory and free memory:
 
-[code][FONT="courier new"]
+[CODE]
 [COLOR="Blue"]new[/COLOR]
     Directory:dir = OpenDir(testDir),
     entry[[COLOR="Purple"]256[/COLOR]],
@@ -41,9 +41,23 @@ while(DirNext(dir, type, entry)) {
 }
 
 new ret = CloseDir(dir); [COLOR="Green"]// always close an open Directory[/COLOR]
-[/FONT][/code]
+[/CODE]
 
 [FONT="courier new"]MoveFile[/FONT] and [FONT="courier new"]CopyFile[/FONT] do exactly what you expect.
+
+[COLOR="DeepSkyBlue"][SIZE="5"][B]Path Functions[/B][/SIZE][/COLOR]
+
+There are also a handful of helper functions for working with file paths:
+
+[LIST]
+[*][FONT="courier new"]PathSep[/FONT]
+[*][FONT="courier new"]PathJoin[/FONT]
+[*][FONT="courier new"]PathBase[/FONT]
+[*][FONT="courier new"]PathDir[/FONT]
+[*][FONT="courier new"]PathExt[/FONT]
+[/LIST]
+
+See the source code for documentation.
 
 [COLOR="RoyalBlue"][SIZE="6"][B]Testing[/B][/SIZE][/COLOR]
 

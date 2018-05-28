@@ -6,6 +6,27 @@
 
 logprintf_t logprintf;
 
+AMX_NATIVE_INFO NATIVES[] = {
+    { "Exists", Native::Exists },
+
+    { "CreateDir", Native::CreateDir },
+    { "RemoveDir", Native::RemoveDir },
+    { "OpenDir", Native::OpenDir },
+    { "DirNext", Native::DirNext },
+    { "CloseDir", Native::CloseDir },
+
+    { "MoveFile", Native::MoveFile },
+    { "CopyFile", Native::CopyFile },
+
+    { "PathSep", Native::PathSep },
+    { "PathJoin", Native::PathJoin },
+    { "PathBase", Native::PathBase },
+    { "PathDir", Native::PathDir },
+    { "PathExt", Native::PathExt },
+
+    { 0, 0 }
+};
+
 PLUGIN_EXPORT unsigned int PLUGIN_CALL Supports()
 {
     return SUPPORTS_VERSION | SUPPORTS_AMX_NATIVES;
@@ -22,27 +43,6 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void** ppData)
 PLUGIN_EXPORT void PLUGIN_CALL Unload()
 {
 }
-
-AMX_NATIVE_INFO NATIVES[] = {
-    { "Exists", Native::Exists },
-
-    { "CreateDir", Native::CreateDir },
-    { "RemoveDir", Native::RemoveDir },
-    { "OpenDir", Native::OpenDir },
-    { "DirNext", Native::DirNext },
-    { "CloseDir", Native::CloseDir },
-
-    { "MoveFile", Native::MoveFile },
-    { "CopyFile", Native::CopyFile },
-
-	{ "PathSep", Native::PathSep },
-    { "PathJoin", Native::PathJoin },
-    { "PathBase", Native::PathBase },
-    { "PathDir", Native::PathDir },
-    { "PathExt", Native::PathExt },
-
-    { 0, 0 }
-};
 
 PLUGIN_EXPORT int PLUGIN_CALL AmxLoad(AMX* amx)
 {

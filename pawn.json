@@ -7,5 +7,17 @@
   "dev_dependencies": ["pawn-lang/YSI-Includes"],
   "runtime": {
     "plugins": ["Southclaws/pawn-fsutil"]
-  }
+  },
+  "resources": [
+    {
+      "name": "fsutil.so",
+      "archive": false,
+      "platform": "linux"
+    },
+    {
+      "name": "fsutil.dll",
+      "archive": false,
+      "platform": "windows"
+    }
+  ]
 }

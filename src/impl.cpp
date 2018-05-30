@@ -66,11 +66,6 @@ bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
     entry = iter->path().string();
     type = iter->status().type();
 
-    // TODO: figure out the proper way to do the iter == end check and remove this
-    if (entry.empty()) {
-        return false;
-    }
-
     iter++;
     openDirPool[id] = iter;
 

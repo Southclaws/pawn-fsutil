@@ -42,7 +42,7 @@ cell AMX_NATIVE_CALL Native::DirNext(AMX* amx, cell* params)
 
     amx_SetCppString(amx, params[3], entry, params[4]);
 
-    return 1;
+    return ret;
 }
 
 cell AMX_NATIVE_CALL Native::CloseDir(AMX* amx, cell* params)

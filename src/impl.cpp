@@ -115,7 +115,7 @@ std::string Impl::PathJoin(std::string a, std::string b)
 std::string Impl::PathBase(std::string input)
 {
     fs::path p(input);
-    return (*p.end()).string();
+    return p.filename().string();
 }
 
 std::string Impl::PathDir(std::string input)

@@ -158,11 +158,25 @@ Test:PathJoin() {
     ASSERT(!strcmp(output, wantOutput));
 }
 
-Test:PathBaseLong() {
+Test:PathBaseLongUnix() {
     new output[256];
     PathBase("scriptfiles/someFolder/another/file.png", output);
 
     ASSERT(!strcmp(output, "file.png"));
+}
+
+Test:PathBaseLongWindows() {
+    new output[256];
+    PathBase("scriptfiles\\someFolder\\another\\file.png", output);
+
+    ASSERT(!strcmp(output, "file.png"));
+}
+
+Test:PathBase() {
+    new output[256];
+    PathBase(".\\scriptfiles\\languages\\Russian", output);
+
+    ASSERT(!strcmp(output, "Russian"));
 }
 
 Test:PathBaseJustFile() {

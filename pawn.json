@@ -6,7 +6,8 @@
   "dependencies": ["Southclaws/samp-stdlib"],
   "dev_dependencies": ["pawn-lang/YSI-Includes"],
   "runtime": {
-    "plugins": ["Southclaws/pawn-fsutil"]
+    "plugins": ["Southclaws/pawn-fsutil"],
+    "mode": "y_testing"
   },
   "resources": [
     {

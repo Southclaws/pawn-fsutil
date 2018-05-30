@@ -95,6 +95,10 @@ Test:OpenDir() {
     ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\d"));
     ASSERT(type == E_DIRECTORY);
 
+    b = DirNext(dir, type, entry);
+    printf("DirNext: %d, %d, %s", b, _:type, entry);
+    ASSERT(b == false);
+
     ret = CloseDir(dir);
     ASSERT(ret == 0);
 

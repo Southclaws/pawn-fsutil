@@ -53,18 +53,21 @@ int Impl::OpenDir(std::string path)
 
 bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
 {
-    auto val = openDirPool.find(id);
-    if (val == openDirPool.end()) {
+    if (openDirPool.find(id) == openDirPool.end()) {
         return false;
     }
 
-    auto iter = val->second;
+    fs::directory_iterator iter = openDirPool[id];
     if (iter == fs::end(iter)) {
         return false;
     }
 
     entry = iter->path().string();
     type = iter->status().type();
+
+	if (type >= fs::file_type::unknown) {
+		return false;
+	}
 
     iter++;
     openDirPool[id] = iter;

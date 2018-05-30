@@ -58,14 +58,16 @@ bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
     }
 
     fs::directory_iterator iter = openDirPool[id];
-    if (iter == fs::end(iter)) {
+    fs::directory_iterator end;
+    if (iter == end) {
         return false;
     }
 
     entry = iter->path().string();
     type = iter->status().type();
 
-    if (type >= fs::file_type::unknown) {
+    // TODO: figure out the proper way to do the iter == end check and remove this
+    if (entry.empty()) {
         return false;
     }
 

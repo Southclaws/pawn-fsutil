@@ -46,9 +46,14 @@ int Impl::RemoveDir(std::string path, bool recursive)
 
 int Impl::OpenDir(std::string path)
 {
-    fs::directory_iterator iter = fs::directory_iterator(path);
-    openDirPool[openDirPoolCount] = iter;
-    return openDirPoolCount++;
+    try {
+        fs::directory_iterator iter = fs::directory_iterator(path);
+        openDirPool[openDirPoolCount] = iter;
+        return openDirPoolCount++;
+    } catch (std::exception& e) {
+        logprintf("directory_iterator failed: %s", e.what());
+        return -1;
+    }
 }
 
 bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)

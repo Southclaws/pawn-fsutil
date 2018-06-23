@@ -26,11 +26,7 @@ int Impl::CreateDir(std::string path)
 int Impl::RemoveDir(std::string path, bool recursive)
 {
     int ret;
-#if defined WIN32
-    std::error_code ec;
-#else
     boost::system::error_code ec;
-#endif
 
     if (recursive) {
         ret = static_cast<int>(fs::remove_all(path, ec));
@@ -90,22 +86,14 @@ int Impl::CloseDir(int id)
 
 int Impl::MoveFile(std::string from, std::string to)
 {
-#if defined WIN32
-    std::error_code ec;
-#else
     boost::system::error_code ec;
-#endif
     fs::rename(from, to, ec);
     return ec.value();
 }
 
 int Impl::CopyFile(std::string from, std::string to)
 {
-#if defined WIN32
-    std::error_code ec;
-#else
     boost::system::error_code ec;
-#endif
     fs::copy(from, to, ec);
     return ec.value();
 }
@@ -127,7 +115,7 @@ std::string Impl::PathDir(std::string input)
 {
     fs::path p(input);
     if (p.has_parent_path()) {
-        return p.parent_path().string();
+		return p.parent_path().make_preferred().string();
     }
     return ".";
 }

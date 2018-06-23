@@ -1,18 +1,13 @@
 #ifndef FSUTIL_IMPL_H
 #define FSUTIL_IMPL_H
 
-#if defined WIN32
-#include <filesystem>
-namespace fs = std::experimental::filesystem::v1;
-#else
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
-
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
+
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
 
 #include <amx/amx.h>
 

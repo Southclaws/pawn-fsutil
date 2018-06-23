@@ -48,8 +48,10 @@ Test:RemoveDir() {
 }
 
 Test:OpenDir() {
-    new testDir[] = "scriptfiles/OpenDir";
+    new testDir[256];
     new ret;
+
+    format(testDir, sizeof testDir, "scriptfiles%cOpenDir", Separator);
 
     if(!Exists(testDir)) {
         ASSERT(CreateDir(testDir) == 1);
@@ -67,32 +69,41 @@ Test:OpenDir() {
     ASSERT(_:dir >= 0);
 
     new
+        wantEntry[256],
         entry[256],
         ENTRY_TYPE:type,
         bool:b;
 
+    format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%ca", Separator, Separator);
     b = DirNext(dir, type, entry);
     printf("DirNext: %d, %d, %s", b, _:type, entry);
     ASSERT(b == true);
-    ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\a"));
+    ASSERT(!strcmp(entry, wantEntry));
+    printf("got  '%s'\nwant '%s'", entry, wantEntry);
     ASSERT(type == E_REGULAR);
 
+    format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%cb", Separator, Separator);
     b = DirNext(dir, type, entry);
     printf("DirNext: %d, %d, %s", b, _:type, entry);
     ASSERT(b == true);
-    ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\b"));
+    ASSERT(!strcmp(entry, wantEntry));
+    printf("got  '%s'\nwant '%s'", entry, wantEntry);
     ASSERT(type == E_REGULAR);
 
+    format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%cc", Separator, Separator);
     b = DirNext(dir, type, entry);
     printf("DirNext: %d, %d, %s", b, _:type, entry);
     ASSERT(b == true);
-    ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\c"));
+    ASSERT(!strcmp(entry, wantEntry));
+    printf("got  '%s'\nwant '%s'", entry, wantEntry);
     ASSERT(type == E_REGULAR);
 
+    format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%cd", Separator, Separator);
     b = DirNext(dir, type, entry);
     printf("DirNext: %d, %d, %s", b, _:type, entry);
     ASSERT(b == true);
-    ASSERT(!strcmp(entry, "scriptfiles\\OpenDir\\d"));
+    ASSERT(!strcmp(entry, wantEntry));
+    printf("got  '%s'\nwant '%s'", entry, wantEntry);
     ASSERT(type == E_DIRECTORY);
 
     b = DirNext(dir, type, entry);
@@ -160,48 +171,61 @@ Test:PathJoin() {
     PathJoin(a, b, output);
 
     ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathBaseLongUnix() {
+    new wantOutput[256] = "file.png";
     new output[256];
     PathBase("scriptfiles/someFolder/another/file.png", output);
 
-    ASSERT(!strcmp(output, "file.png"));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathBaseLongWindows() {
+    new wantOutput[256] = "file.png";
     new output[256];
-    PathBase("scriptfiles\\someFolder\\another\\file.png", output);
+    PathBase("scriptfiles/someFolder/another/file.png", output);
 
-    ASSERT(!strcmp(output, "file.png"));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathBase() {
+    new wantOutput[256] = "Russian";
     new output[256];
-    PathBase(".\\scriptfiles\\languages\\Russian", output);
+    PathBase("./scriptfiles/languages/Russian", output);
 
-    ASSERT(!strcmp(output, "Russian"));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathBaseJustFile() {
+    new wantOutput[256] = "file.png";
     new output[256];
     PathBase("file.png", output);
 
-    ASSERT(!strcmp(output, "file.png"));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathBaseEmpty() {
+    new wantOutput[256] = "";
     new output[256];
     PathBase("", output);
 
-    ASSERT(!strcmp(output, ""));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathBaseDot() {
+    new wantOutput[256] = "";
     new output[256];
     PathBase(".", output);
 
-    ASSERT(!strcmp(output, ""));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathDir() {
@@ -211,28 +235,38 @@ Test:PathDir() {
     new output[256];
     PathDir("scriptfiles/someFolder/another/file.png", output);
     ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathDirNoParent() {
+    new wantOutput[256] = ".";
     new output[256];
     PathDir("file.png", output);
-    ASSERT(!strcmp(output, "."));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathExt() {
+    new wantOutput[256] = ".png";
     new output[256];
     PathExt("file.png", output);
-    ASSERT(!strcmp(output, ".png"));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathExtMulti() {
+    new wantOutput[265] = ".gz";
     new output[256];
     PathExt("file.tar.gz", output);
-    ASSERT(!strcmp(output, ".gz"));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }
 
 Test:PathExtNone() {
+    new wantOutput[265] = "";
     new output[256];
     PathExt("file", output);
-    ASSERT(!strcmp(output, ""));
+    ASSERT(!strcmp(output, wantOutput));
+    printf("got  '%s'\nwant '%s'", output, wantOutput);
 }

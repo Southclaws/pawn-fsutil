@@ -12,12 +12,11 @@ if(UNIX)
 	set(CMAKE_CXX_FLAGS "-m32 -fvisibility=hidden")
 	set(CMAKE_C_FLAGS "-m32 -fvisibility=hidden")
 	set_property(GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS OFF)
-
-	set(Boost_USE_STATIC_LIBS ON)
-
-	find_package(Boost REQUIRED COMPONENTS system filesystem)
-	include_directories(${Boost_INCLUDE_DIR})
-	link_directories(${Boost_LIBRARY_DIR})
 endif()
+
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost REQUIRED COMPONENTS system filesystem)
+include_directories(${Boost_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIR})
 
 add_subdirectory(src)

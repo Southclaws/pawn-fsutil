@@ -26,11 +26,7 @@ int Impl::CreateDir(std::string path)
 int Impl::RemoveDir(std::string path, bool recursive)
 {
     int ret;
-#if defined WIN32
-    std::error_code ec;
-#else
     boost::system::error_code ec;
-#endif
 
     if (recursive) {
         ret = static_cast<int>(fs::remove_all(path, ec));
@@ -46,20 +42,25 @@ int Impl::RemoveDir(std::string path, bool recursive)
 
 int Impl::OpenDir(std::string path)
 {
-    fs::directory_iterator iter = fs::directory_iterator(path);
-    openDirPool[openDirPoolCount] = iter;
-    return openDirPoolCount++;
+    try {
+        fs::directory_iterator iter = fs::directory_iterator(path);
+        openDirPool[openDirPoolCount] = iter;
+        return openDirPoolCount++;
+    } catch (std::exception& e) {
+        logprintf("directory_iterator failed: %s", e.what());
+        return -1;
+    }
 }
 
 bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
 {
-    auto val = openDirPool.find(id);
-    if (val == openDirPool.end()) {
+    if (openDirPool.find(id) == openDirPool.end()) {
         return false;
     }
 
-    auto iter = val->second;
-    if (iter == fs::end(iter)) {
+    fs::directory_iterator iter = openDirPool[id];
+    fs::directory_iterator end;
+    if (iter == end) {
         return false;
     }
 
@@ -85,22 +86,14 @@ int Impl::CloseDir(int id)
 
 int Impl::MoveFile(std::string from, std::string to)
 {
-#if defined WIN32
-    std::error_code ec;
-#else
     boost::system::error_code ec;
-#endif
     fs::rename(from, to, ec);
     return ec.value();
 }
 
 int Impl::CopyFile(std::string from, std::string to)
 {
-#if defined WIN32
-    std::error_code ec;
-#else
     boost::system::error_code ec;
-#endif
     fs::copy(from, to, ec);
     return ec.value();
 }
@@ -115,14 +108,14 @@ std::string Impl::PathJoin(std::string a, std::string b)
 std::string Impl::PathBase(std::string input)
 {
     fs::path p(input);
-    return (*p.end()).string();
+    return p.filename().string();
 }
 
 std::string Impl::PathDir(std::string input)
 {
     fs::path p(input);
     if (p.has_parent_path()) {
-        return p.parent_path().string();
+		return p.parent_path().make_preferred().string();
     }
     return ".";
 }

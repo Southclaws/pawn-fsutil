@@ -38,11 +38,11 @@ cell AMX_NATIVE_CALL Native::DirNext(AMX* amx, cell* params)
 
     cell* typeOut;
     amx_GetAddr(amx, params[2], &typeOut);
-    *typeOut = (int)type;
+    *typeOut = static_cast<cell>(type);
 
     amx_SetCppString(amx, params[3], entry, params[4]);
 
-    return 1;
+    return ret;
 }
 
 cell AMX_NATIVE_CALL Native::CloseDir(AMX* amx, cell* params)
@@ -64,8 +64,9 @@ cell AMX_NATIVE_CALL Native::CopyFile(AMX* amx, cell* params)
     return Impl::CopyFile(from, to);
 }
 
-cell Native::PathSep(AMX * amx, cell * params) {
-	return fs::path::preferred_separator;
+cell Native::PathSep(AMX* amx, cell* params)
+{
+    return fs::path::preferred_separator;
 }
 
 cell AMX_NATIVE_CALL Native::PathJoin(AMX* amx, cell* params)

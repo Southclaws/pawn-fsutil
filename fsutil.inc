@@ -22,16 +22,16 @@ enum ENTRY_TYPE {
 
 
 // Checks if an entry exists, works on files and directories.
-native bool:Exists(path[]);
+native bool:Exists(const path[]);
 
 
 // -
 // Directories
 // -
 
-native CreateDir(path[]);
-native RemoveDir(path[], bool:recursive = false);
-native Directory:OpenDir(path[]);
+native CreateDir(const path[]);
+native RemoveDir(const path[], bool:recursive = false);
+native Directory:OpenDir(const path[]);
 native bool:DirNext(Directory:dir, &ENTRY_TYPE:type, entry[], len = sizeof(entry));
 native CloseDir(Directory:dir);
 
@@ -40,8 +40,8 @@ native CloseDir(Directory:dir);
 // Move and Copy
 // -
 
-native MoveFile(from[], to[]);
-native CopyFile(from[], to[]);
+native MoveFile(const from[], const to[]);
+native CopyFile(const from[], const to[]);
 
 
 // -

@@ -20,4 +20,4 @@ add_samp_plugin(fsutil
 	natives.hpp
 	plugin.def
 )
-target_link_libraries(fsutil ${Boost_LIBRARIES})
+target_link_libraries(fsutil)

@@ -26,7 +26,7 @@ int Impl::CreateDir(std::string path)
 int Impl::RemoveDir(std::string path, bool recursive)
 {
     int ret;
-    boost::system::error_code ec;
+    std::error_code ec;
 
     if (recursive) {
         ret = static_cast<int>(fs::remove_all(path, ec));
@@ -86,14 +86,14 @@ int Impl::CloseDir(int id)
 
 int Impl::MoveFile(std::string from, std::string to)
 {
-    boost::system::error_code ec;
+    std::error_code ec;
     fs::rename(from, to, ec);
     return ec.value();
 }
 
 int Impl::CopyFile(std::string from, std::string to)
 {
-    boost::system::error_code ec;
+    std::error_code ec;
     fs::copy(from, to, ec);
     return ec.value();
 }

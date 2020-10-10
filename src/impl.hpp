@@ -5,9 +5,9 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <filesystem>
 
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 #include <amx/amx.h>
 

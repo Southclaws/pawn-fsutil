@@ -65,7 +65,12 @@ bool Impl::DirNext(int id, std::string& entry, fs::file_type& type)
     }
 
     entry = iter->path().string();
-    type = iter->status().type();
+    if (iter->is_regular_file())
+        type = fs::file_type::regular;
+    else if (iter->is_directory())
+        type = fs::file_type::directory;
+    else
+        type = fs::file_type::none;
 
     iter++;
     openDirPool[id] = iter;

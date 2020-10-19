@@ -3,7 +3,7 @@
 #include "fsutil.inc"
 
 #include <a_samp>
-#include <YSI\y_testing>
+#include <YSI_Core\y_testing>
 
 
 new Separator;

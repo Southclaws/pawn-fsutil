@@ -110,14 +110,11 @@ cell AMX_NATIVE_CALL FileSystem::Natives::EnumerateDirectory(AMX* amx, cell* par
         if (directory_iterator != end)
         {
             cell* type_out;
+            amx_GetAddr(amx, params[2], &type_out);
+            *type_out = static_cast<cell>(fileTypeLookup.at(directory_iterator->status().type()));
+            amx_SetCppString(amx, params[3], directory_iterator->path().string(), params[4]);
             directory_iterator++;
-            if (directory_iterator != end)
-            {
-                amx_GetAddr(amx, params[2], &type_out);
-                *type_out = static_cast<cell>(fileTypeLookup.at(directory_iterator->status().type()));
-                amx_SetCppString(amx, params[3], directory_iterator->path().string(), params[4]);
-                ret = 1;
-            }
+            ret = 1;
         }
     }
     return ret;
@@ -129,12 +126,12 @@ cell AMX_NATIVE_CALL FileSystem::Natives::EnumerateDirectory(AMX* amx, cell* par
 /// @return "1" if directory enumerator was successfully destroyed, otherwise "0"
 cell AMX_NATIVE_CALL FileSystem::Natives::DestroyDirectoryEnumerator(AMX* amx, cell* params)
 {
-    cell ret(0);
+    cell ret(1);
     const std::map<cell, std::filesystem::directory_iterator>::iterator& iterator(directoryEnumerators.find(params[1]));
     if (iterator != directoryEnumerators.end())
     {
         directoryEnumerators.erase(iterator);
-        ret = 1;
+        ret = 0;
     }
     return ret;
 }
@@ -145,11 +142,11 @@ cell AMX_NATIVE_CALL FileSystem::Natives::DestroyDirectoryEnumerator(AMX* amx, c
 /// @return "1" if file was moved successfully, otherwise "0"
 cell AMX_NATIVE_CALL FileSystem::Natives::MoveFile(AMX* amx, cell* params)
 {
-    cell ret(0);
+    cell ret(-1);
     try
     {
         std::filesystem::rename(amx_GetCppString(amx, params[1]), amx_GetCppString(amx, params[2]));
-        ret = 1;
+        ret = 0;
     }
     catch (const std::filesystem::filesystem_error& e)
     {
@@ -164,11 +161,11 @@ cell AMX_NATIVE_CALL FileSystem::Natives::MoveFile(AMX* amx, cell* params)
 /// @return "1" if file was copied successfully, otherwise "0"
 cell AMX_NATIVE_CALL FileSystem::Natives::CopyFile(AMX* amx, cell* params)
 {
-    cell ret(0);
+    cell ret(-1);
     try
     {
         std::filesystem::copy(amx_GetCppString(amx, params[1]), amx_GetCppString(amx, params[2]));
-        ret = 1;
+        ret = 0;
     }
     catch (const std::filesystem::filesystem_error& e)
     {

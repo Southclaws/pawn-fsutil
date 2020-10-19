@@ -1,7 +1,7 @@
 // fsutil implements a set of file system utility functions for Pawn.
 
-const ENTRY_TYPE:E_REGULAR = 2;
-const ENTRY_TYPE:E_DIRECTORY = 3;
+const ENTRY_TYPE:E_REGULAR = ENTRY_TYPE:2;
+const ENTRY_TYPE:E_DIRECTORY = ENTRY_TYPE:3;
 
 
 // Checks if an entry exists, works on files and directories.

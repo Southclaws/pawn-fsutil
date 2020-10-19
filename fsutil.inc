@@ -1,24 +1,7 @@
 // fsutil implements a set of file system utility functions for Pawn.
 
-enum ENTRY_TYPE {
-    E_STATUS_ERROR,
-    E_STATUS_UNKNOWN = E_STATUS_ERROR,
-    E_NOT_FOUND,
-    E_REGULAR,
-    E_DIRECTORY,
-
-    // the following may not apply to some operating systems or file systems
-    E_SYMLINK_FILE,
-    E_BLOCK_FILE,
-    E_CHARACTER_FILE,
-    E_FIFO_FILE,
-    E_SOCKET_FILE,
-    // Windows: FILE_ATTRIBUTE_REPARSE_POINT that is not a symlink
-    E_REPARSE_FILE,
-    // file does exist, but isn't one of the above types or we
-    // don't have strong enough permission to find its type
-    E_TYPE_UNKNOWN,
-}
+const ENTRY_TYPE:E_REGULAR = 2;
+const ENTRY_TYPE:E_DIRECTORY = 3;
 
 
 // Checks if an entry exists, works on files and directories.

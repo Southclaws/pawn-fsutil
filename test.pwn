@@ -5,11 +5,11 @@
 #include <a_samp>
 #include <YSI_Core\y_testing>
 
-enum EEntry
+enum E_ENTRY
 {
-    EEntry_FileName,
-    ENTRY_TYPE:EEntry_Type,
-    bool:EEntry_IsFound
+    E_ENTRY_FILE_NAME,
+    ENTRY_TYPE:E_ENTRY_TYPE,
+    bool:E_ENTRY_IS_FOUND
 }
 
 new Separator;
@@ -77,7 +77,7 @@ Test:OpenDir() {
     new
         wantEntry[256],
         entry[256],
-        entries[][EEntry] =
+        entries[][E_ENTRY] =
         {
             {'a', E_REGULAR, false},
             {'b', E_REGULAR, false},
@@ -93,14 +93,14 @@ Test:OpenDir() {
         b = false;
         for (entry_index = 0; entry_index < sizeof entries; entry_index++)
         {
-            format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%c%c", Separator, Separator, entries[entry_index][EEntry_FileName]);
+            format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%c%c", Separator, Separator, entries[entry_index][E_ENTRY_FILE_NAME]);
             if (!strcmp(entry, wantEntry))
             {
                 printf("DirNext: %d, %s", _:type, entry);
                 ASSERT(!strcmp(entry, wantEntry));
                 printf("got '%s'\nwant '%s'", entry, wantEntry);
-                ASSERT(type == entries[entry_index][EEntry_Type]);
-                entries[entry_index][EEntry_IsFound] = true;
+                ASSERT(type == entries[entry_index][E_ENTRY_TYPE]);
+                entries[entry_index][E_ENTRY_IS_FOUND] = true;
                 b = true;
                 break;
             }
@@ -110,7 +110,7 @@ Test:OpenDir() {
 
     for (entry_index = 0; entry_index < sizeof entries; entry_index++)
     {
-        ASSERT(entries[entry_index][EEntry_IsFound]);
+        ASSERT(entries[entry_index][E_ENTRY_IS_FOUND]);
     }
 
     b = DirNext(dir, type, entry);

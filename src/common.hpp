@@ -1,3 +1,5 @@
+#pragma once
+
 // shared AMX/SA:MP stuff
 extern void** ppPluginData;
 extern void* pAMXFunctions;

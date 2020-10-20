@@ -1,7 +1,41 @@
 // fsutil implements a set of file system utility functions for Pawn.
 
-const ENTRY_TYPE:E_REGULAR = ENTRY_TYPE:2;
-const ENTRY_TYPE:E_DIRECTORY = ENTRY_TYPE:3;
+/// @brief File type enumerator
+enum ENTRY_TYPE
+{
+    /// @brief No file type
+    E_NONE,
+
+    /// @brief File not found
+    E_NOT_FOUND,
+
+    /// @brief Is regular file type
+    E_REGULAR,
+
+    /// @brief Is directory file type
+    E_DIRECTORY,
+
+    /// @brief Is symbolic link file type
+    E_SYMBOLIC_LINK,
+
+    /// @brief Is block file type
+    E_BLOCK,
+
+    /// @brief Is character file type
+    E_CHARACTER,
+
+    /// @brief Is "first in, first out" file type
+    E_FIRST_IN_FIRST_OUT,
+
+    /// @brief Socket file type
+    E_SOCKET,
+
+    /// @brief Unknown file type
+    E_UNKNOWN
+}
+
+// Invalid directory enumerator ID
+const Directory:INVALID_DIRECTORY_ENUMERATOR_ID = Directory:-1;
 
 
 // Checks if an entry exists, works on files and directories.
@@ -12,10 +46,10 @@ native bool:Exists(const path[]);
 // Directories
 // -
 
-native CreateDir(const path[]);
+native CreateDir(const path[], bool:createBaseDirectories = true);
 native RemoveDir(const path[], bool:recursive = false);
 native Directory:OpenDir(const path[]);
-native bool:DirNext(Directory:dir, &ENTRY_TYPE:type, entry[], len = sizeof(entry));
+native bool:DirNext(Directory:dir, &ENTRY_TYPE:type, entry[], len = sizeof entry);
 native CloseDir(Directory:dir);
 
 

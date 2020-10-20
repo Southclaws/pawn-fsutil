@@ -5,6 +5,12 @@
 #include <a_samp>
 #include <YSI_Core\y_testing>
 
+enum E_ENTRY
+{
+    E_ENTRY_FILE_NAME,
+    ENTRY_TYPE:E_ENTRY_TYPE,
+    bool:E_ENTRY_IS_FOUND
+}
 
 new Separator;
 
@@ -71,40 +77,41 @@ Test:OpenDir() {
     new
         wantEntry[256],
         entry[256],
+        entries[][E_ENTRY] =
+        {
+            {'a', E_REGULAR, false},
+            {'b', E_REGULAR, false},
+            {'c', E_REGULAR, false},
+            {'d', E_DIRECTORY, false}
+        },
         ENTRY_TYPE:type,
-        bool:b;
+        bool:b,
+        entry_index;
 
-    format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%ca", Separator, Separator);
-    b = DirNext(dir, type, entry);
-    printf("DirNext: %d, %d, %s", b, _:type, entry);
-    ASSERT(b == true);
-    ASSERT(!strcmp(entry, wantEntry));
-    printf("got  '%s'\nwant '%s'", entry, wantEntry);
-    ASSERT(type == E_REGULAR);
+    while (DirNext(dir, type, entry))
+    {
+        b = false;
+        for (entry_index = 0; entry_index < sizeof entries; entry_index++)
+        {
+            format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%c%c", Separator, Separator, entries[entry_index][E_ENTRY_FILE_NAME]);
+            if (!strcmp(entry, wantEntry))
+            {
+                printf("DirNext: %d, %s", _:type, entry);
+                ASSERT(!strcmp(entry, wantEntry));
+                printf("got '%s'\nwant '%s'", entry, wantEntry);
+                ASSERT(type == entries[entry_index][E_ENTRY_TYPE]);
+                entries[entry_index][E_ENTRY_IS_FOUND] = true;
+                b = true;
+                break;
+            }
+        }
+        ASSERT(b);
+    }
 
-    format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%cb", Separator, Separator);
-    b = DirNext(dir, type, entry);
-    printf("DirNext: %d, %d, %s", b, _:type, entry);
-    ASSERT(b == true);
-    ASSERT(!strcmp(entry, wantEntry));
-    printf("got  '%s'\nwant '%s'", entry, wantEntry);
-    ASSERT(type == E_REGULAR);
-
-    format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%cc", Separator, Separator);
-    b = DirNext(dir, type, entry);
-    printf("DirNext: %d, %d, %s", b, _:type, entry);
-    ASSERT(b == true);
-    ASSERT(!strcmp(entry, wantEntry));
-    printf("got  '%s'\nwant '%s'", entry, wantEntry);
-    ASSERT(type == E_REGULAR);
-
-    format(wantEntry, sizeof wantEntry, "scriptfiles%cOpenDir%cd", Separator, Separator);
-    b = DirNext(dir, type, entry);
-    printf("DirNext: %d, %d, %s", b, _:type, entry);
-    ASSERT(b == true);
-    ASSERT(!strcmp(entry, wantEntry));
-    printf("got  '%s'\nwant '%s'", entry, wantEntry);
-    ASSERT(type == E_DIRECTORY);
+    for (entry_index = 0; entry_index < sizeof entries; entry_index++)
+    {
+        ASSERT(entries[entry_index][E_ENTRY_IS_FOUND]);
+    }
 
     b = DirNext(dir, type, entry);
     printf("DirNext: %d, %d, %s", b, _:type, entry);

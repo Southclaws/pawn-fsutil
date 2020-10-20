@@ -9,13 +9,12 @@ include_directories(
 )
 
 add_samp_plugin(fsutil 
+	${SAMPSDK_DIR}/amx/getch.c
 	${SAMPSDK_DIR}/amxplugin.cpp
 	${SAMPSDK_DIR}/amxplugin2.cpp
-	${SAMPSDK_DIR}/amx/getch.c
+	EFileType.hpp
 	common.hpp
-	fsutil.cpp
-	impl.cpp
-	impl.hpp
+	main.cpp
 	natives.cpp
 	natives.hpp
 	plugin.def

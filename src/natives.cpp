@@ -1,103 +1,226 @@
+#include <filesystem>
+#include <iostream>
+#include <map>
 #include <string>
 
 #include <amx/amx2.h>
 
-#include "impl.hpp"
+#include "EFileType.hpp"
 #include "natives.hpp"
+#include "common.hpp"
 
-cell AMX_NATIVE_CALL Native::Exists(AMX* amx, cell* params)
+/// @brief File type lookup
+static const std::map<std::filesystem::file_type, FileSystem::EFileType> fileTypeLookup =
 {
-    std::string path = amx_GetCppString(amx, params[1]);
-    return Impl::Exists(path);
+    { std::filesystem::file_type::none,         FileSystem::EFileType::None },
+    { std::filesystem::file_type::not_found,    FileSystem::EFileType::NotFound },
+    { std::filesystem::file_type::regular,      FileSystem::EFileType::Regular },
+    { std::filesystem::file_type::directory,    FileSystem::EFileType::Directory },
+    { std::filesystem::file_type::symlink,      FileSystem::EFileType::SymbolicLink },
+    { std::filesystem::file_type::block,        FileSystem::EFileType::Block },
+    { std::filesystem::file_type::character,    FileSystem::EFileType::Character },
+    { std::filesystem::file_type::fifo,         FileSystem::EFileType::FirstInFirstOut },
+    { std::filesystem::file_type::socket,       FileSystem::EFileType::Socket },
+    { std::filesystem::file_type::unknown,      FileSystem::EFileType::Unknown }
+};
+
+
+// TODO: Use a better ID pooling solution
+
+/// @brief Directory enumerators
+static std::map<cell, std::filesystem::directory_iterator> directoryEnumerators;
+
+/// @brief Available directory enumerator ID
+static cell availableDirectoryEnumeratorID(0);
+
+/// @brief Does file system object exist
+/// @param amx AMX
+/// @param params Function parameters
+/// @return "1" if file exists, otherwise "0"
+cell AMX_NATIVE_CALL FileSystem::Natives::DoesExist(AMX* amx, cell* params)
+{
+    return static_cast<cell>(std::filesystem::exists(amx_GetCppString(amx, params[1])));
 }
 
-cell AMX_NATIVE_CALL Native::CreateDir(AMX* amx, cell* params)
+/// @brief Create directory
+/// @param amx AMX
+/// @param params Function parameters
+/// @return "1" if directory was successfully created, otherwise "0"
+cell AMX_NATIVE_CALL FileSystem::Natives::CreateDirectory(AMX* amx, cell* params)
 {
-    std::string path = amx_GetCppString(amx, params[1]);
-    return Impl::CreateDir(path);
-}
-
-cell AMX_NATIVE_CALL Native::RemoveDir(AMX* amx, cell* params)
-{
-    std::string path = amx_GetCppString(amx, params[1]);
-    return Impl::RemoveDir(path, params[2]);
-}
-
-cell AMX_NATIVE_CALL Native::OpenDir(AMX* amx, cell* params)
-{
-    std::string path = amx_GetCppString(amx, params[1]);
-    return Impl::OpenDir(path);
-}
-
-cell AMX_NATIVE_CALL Native::DirNext(AMX* amx, cell* params)
-{
-    std::string entry;
-    fs::file_type type;
-
-    bool ret = Impl::DirNext(params[1], entry, type);
-
-    cell* typeOut;
-    amx_GetAddr(amx, params[2], &typeOut);
-    *typeOut = static_cast<cell>(type);
-
-    amx_SetCppString(amx, params[3], entry, params[4]);
-
+    cell ret(0);
+    try
+    {
+        ret = params[2] ? std::filesystem::create_directories(amx_GetCppString(amx, params[1])) : std::filesystem::create_directory(amx_GetCppString(amx, params[1]));
+    }
+    catch (const std::filesystem::filesystem_error& e)
+    {
+        logprintf(e.what());
+    }
     return ret;
 }
 
-cell AMX_NATIVE_CALL Native::CloseDir(AMX* amx, cell* params)
+/// @brief Remove directory
+/// @param amx AMX
+/// @param params Function parameters
+/// @return "1" if directory was successfully removed, otherwise "0"
+cell AMX_NATIVE_CALL FileSystem::Natives::RemoveDirectory(AMX* amx, cell* params)
 {
-    return Impl::CloseDir(params[1]);
+    cell ret(0);
+    try
+    {
+        ret = params[2] ? static_cast<cell>(std::filesystem::remove_all(amx_GetCppString(amx, params[1]))) : static_cast<cell>(std::filesystem::remove(amx_GetCppString(amx, params[1])));
+    }
+    catch (const std::filesystem::filesystem_error& e)
+    {
+        logprintf(e.what());
+    }
+    return ret;
 }
 
-cell AMX_NATIVE_CALL Native::MoveFile(AMX* amx, cell* params)
+/// @brief Create directory enumerator
+/// @param amx AMX
+/// @param params Function parameters
+/// @return Directory enumerator ID if successful, otherwise "FileSystem::Natives::INVALID_DIRECTORY_ENUMERATOR_ID"
+cell AMX_NATIVE_CALL FileSystem::Natives::CreateDirectoryEnumerator(AMX* amx, cell* params)
 {
-    std::string from = amx_GetCppString(amx, params[1]);
-    std::string to = amx_GetCppString(amx, params[2]);
-    return Impl::MoveFile(from, to);
+    cell ret(INVALID_DIRECTORY_ENUMERATOR_ID);
+    std::filesystem::path path(amx_GetCppString(amx, params[1]));
+    if (std::filesystem::is_directory(path))
+    {
+        directoryEnumerators.insert(std::pair<cell, std::filesystem::directory_iterator>(availableDirectoryEnumeratorID, std::filesystem::directory_iterator(path)));
+        ret = availableDirectoryEnumeratorID;
+        ++availableDirectoryEnumeratorID;
+    }
+    return ret;
 }
 
-cell AMX_NATIVE_CALL Native::CopyFile(AMX* amx, cell* params)
+/// @brief Enumerate directory
+/// @param amx AMX
+/// @param params Function parameters
+/// @return "1" if enumeration was successful, otherwise "0"
+cell AMX_NATIVE_CALL FileSystem::Natives::EnumerateDirectory(AMX* amx, cell* params)
 {
-    std::string from = amx_GetCppString(amx, params[1]);
-    std::string to = amx_GetCppString(amx, params[2]);
-    return Impl::CopyFile(from, to);
+    cell ret(0);
+    const std::map<cell, std::filesystem::directory_iterator>::iterator& iterator(directoryEnumerators.find(params[1]));
+    if (iterator != directoryEnumerators.end())
+    {
+        std::filesystem::directory_iterator& directory_iterator(iterator->second);
+        std::filesystem::directory_iterator end;
+        if (directory_iterator != end)
+        {
+            cell* type_out;
+            amx_GetAddr(amx, params[2], &type_out);
+            *type_out = static_cast<cell>(fileTypeLookup.at(directory_iterator->status().type()));
+            amx_SetCppString(amx, params[3], directory_iterator->path().string(), params[4]);
+            directory_iterator++;
+            ret = 1;
+        }
+    }
+    return ret;
 }
 
-cell Native::PathSep(AMX* amx, cell* params)
+/// @brief Destroy directory enumerator
+/// @param amx AMX
+/// @param params Function parameters
+/// @return "1" if directory enumerator was successfully destroyed, otherwise "0"
+cell AMX_NATIVE_CALL FileSystem::Natives::DestroyDirectoryEnumerator(AMX* amx, cell* params)
 {
-    return fs::path::preferred_separator;
+    cell ret(1);
+    const std::map<cell, std::filesystem::directory_iterator>::iterator& iterator(directoryEnumerators.find(params[1]));
+    if (iterator != directoryEnumerators.end())
+    {
+        directoryEnumerators.erase(iterator);
+        ret = 0;
+    }
+    return ret;
 }
 
-cell AMX_NATIVE_CALL Native::PathJoin(AMX* amx, cell* params)
+/// @brief Move file
+/// @param amx AMX
+/// @param params Function parameters
+/// @return "1" if file was moved successfully, otherwise "0"
+cell AMX_NATIVE_CALL FileSystem::Natives::MoveFile(AMX* amx, cell* params)
 {
-    std::string a = amx_GetCppString(amx, params[1]);
-    std::string b = amx_GetCppString(amx, params[2]);
-    std::string result = Impl::PathJoin(a, b);
-    amx_SetCppString(amx, params[3], result, params[4]);
+    cell ret(-1);
+    try
+    {
+        std::filesystem::rename(amx_GetCppString(amx, params[1]), amx_GetCppString(amx, params[2]));
+        ret = 0;
+    }
+    catch (const std::filesystem::filesystem_error& e)
+    {
+        logprintf(e.what());
+    }
+    return ret;
+}
+
+/// @brief Copy file
+/// @param amx AMX
+/// @param params Function parameters
+/// @return "1" if file was copied successfully, otherwise "0"
+cell AMX_NATIVE_CALL FileSystem::Natives::CopyFile(AMX* amx, cell* params)
+{
+    cell ret(-1);
+    try
+    {
+        std::filesystem::copy(amx_GetCppString(amx, params[1]), amx_GetCppString(amx, params[2]));
+        ret = 0;
+    }
+    catch (const std::filesystem::filesystem_error& e)
+    {
+        logprintf(e.what());
+    }
+    return ret;
+}
+
+/// @brief Get path separator
+/// @param amx AMX
+/// @param params Function parameters
+/// @return Path seperator
+cell AMX_NATIVE_CALL FileSystem::Natives::GetPathSeparator(AMX* amx, cell* params)
+{
+    return std::filesystem::path::preferred_separator;
+}
+
+/// @brief Combine paths
+/// @param amx AMX
+/// @param params Function parameters
+/// @return Nothing
+cell AMX_NATIVE_CALL FileSystem::Natives::CombinePaths(AMX* amx, cell* params)
+{
+    amx_SetCppString(amx, params[3], std::filesystem::path(amx_GetCppString(amx, params[1])).append(amx_GetCppString(amx, params[2])).string(), params[4]);
     return 0;
 }
 
-cell AMX_NATIVE_CALL Native::PathBase(AMX* amx, cell* params)
+/// @brief Get file name
+/// @param amx AMX
+/// @param params Function parameters
+/// @return Nothing
+cell AMX_NATIVE_CALL FileSystem::Natives::GetFileName(AMX* amx, cell* params)
 {
-    std::string input = amx_GetCppString(amx, params[1]);
-    std::string base = Impl::PathBase(input);
-    amx_SetCppString(amx, params[2], base, params[3]);
+    amx_SetCppString(amx, params[2], std::filesystem::path(amx_GetCppString(amx, params[1])).filename().string(), params[3]);
     return 0;
 }
 
-cell AMX_NATIVE_CALL Native::PathDir(AMX* amx, cell* params)
+/// @brief Get directory path
+/// @param amx AMX
+/// @param params Function parameters
+/// @return Nothing
+cell AMX_NATIVE_CALL FileSystem::Natives::GetDirectoryPath(AMX* amx, cell* params)
 {
-    std::string input = amx_GetCppString(amx, params[1]);
-    std::string base = Impl::PathDir(input);
-    amx_SetCppString(amx, params[2], base, params[3]);
+    std::filesystem::path path(amx_GetCppString(amx, params[1]));
+    amx_SetCppString(amx, params[2], path.has_parent_path() ? path.parent_path().make_preferred().string() : std::string("."), params[3]);
     return 0;
 }
 
-cell AMX_NATIVE_CALL Native::PathExt(AMX* amx, cell* params)
+/// @brief Get file extension
+/// @param amx AMX
+/// @param params Function parameters
+/// @return Nothing
+cell AMX_NATIVE_CALL FileSystem::Natives::GetFileExtension(AMX* amx, cell* params)
 {
-    std::string input = amx_GetCppString(amx, params[1]);
-    std::string base = Impl::PathExt(input);
-    amx_SetCppString(amx, params[2], base, params[3]);
+    std::filesystem::path path(amx_GetCppString(amx, params[1]));
+    amx_SetCppString(amx, params[2], path.has_extension() ? path.extension().string() : std::string(), params[3]);
     return 0;
 }

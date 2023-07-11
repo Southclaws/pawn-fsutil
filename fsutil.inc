@@ -1,5 +1,14 @@
 // fsutil implements a set of file system utility functions for Pawn.
 
+#if defined _inc_fsutil
+    #undef _inc_fsutil
+#endif
+
+#if defined _fsutil_included
+    #endinput
+#endif
+#define _fsutil_included
+
 /// @brief File type enumerator
 enum ENTRY_TYPE
 {
